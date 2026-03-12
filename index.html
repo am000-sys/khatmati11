@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ختمتي | حاسبة المحراب</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* خلفية عامة بنمط زخارف إسلامية مكررة */
+body{
+  font-family:Tahoma,"Segoe UI",sans-serif;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 0 0,rgba(255,255,255,.9) 0,rgba(255,255,255,0) 55%),
+    radial-gradient(circle at 100% 100%,rgba(255,255,255,.9) 0,rgba(255,255,255,0) 55%),
+    repeating-conic-gradient(from 45deg,
+      #0f3d33 0 10deg,
+      #0b2a24 10deg 20deg);
+  background-size: 260px 260px;
+  color:#122019;
+  padding:20px;
+}
+
+/* إطار مركزي بهوية عربية مزخرفة */
+.container{
+  max-width:840px;
+  margin:auto;
+  border-radius:30px;
+  background:#fdfbf7;
+  padding:3px;
+  position:relative;
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.5),
+    0 0 0 1px rgba(255,255,255,.4) inset;
+}
+
+/* إطار زخرفي ذهبي حول البطاقة يشبه الشهادات الإسلامية[web:59] */
+.container::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  padding:1.5px;
+  border-radius:28px;
+  background:
+    conic-gradient(
+      from 0deg,
+      #c79e3b,
+      #f4e4aa,
+      #d9b666,
+      #f9f1c7,
+      #c79e3b);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+          mask-composite:exclude;
+}
+
+/* إطار داخلي مع زخارف هندسية خفيفة */
+.inner{
+  position:relative;
+  border-radius:24px;
+  padding:26px 26px 28px;
+  background:
+    radial-gradient(circle at 10% 0,rgba(255,255,255,.95),rgba(255,255,255,0) 60%),
+    radial-gradient(circle at 90% 0,rgba(255,255,255,.9),rgba(255,255,255,0) 60%),
+    #fbf7f0;
+  border:1px solid rgba(246,241,225,.9);
+  overflow:hidden;
+}
+
+/* خلفية زخرفية هندسية داخلية (نمط نجوم ومربعات مبسط)[web:17] */
+.inner::before{
+  content:"";
+  position:absolute;
+  inset:14px;
+  opacity:0.09;
+  background-image:
+    linear-gradient(45deg, #0f3d33 12%, transparent 12%, transparent 50%, #0f3d33 50%, #0f3d33 62%, transparent 62%, transparent),
+    linear-gradient(135deg,#0f3d33 12%, transparent 12%, transparent 50%, #0f3d33 50%, #0f3d33 62%, transparent 62%, transparent);
+  background-size:22px 22px;
+  mix-blend-mode:multiply;
+}
+
+/* طبقة تغطية لتخفيف النمط وعدم التشويش على المحتوى */
+.inner::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(251,247,240,.96),rgba(251,247,240,.93),rgba(251,247,240,.97));
+}
+
+/* كل محتوى البطاقة فوق طبقة الزخرفة */
+.content{
+  position:relative;
+}
+
+/* رأس الهوية: شعار نصي + زخارف */
+.header{
+  text-align:center;
+  margin-bottom:20px;
+  color:#0f3d33;
+}
+
+.brand-emblem{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 0,#ffffff,#f9f0d0 50%,#c49a3a 100%);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.95),
+    0 12px 20px rgba(0,0,0,.45);
+  margin-bottom:8px;
+  position:relative;
+}
+
+/* زخرفة نجم ثماني داخل الشعار[web:17] */
+.brand-emblem::before{
+  content:"";
+  position:absolute;
+  inset:12px;
+  background:
+    linear-gradient(45deg,rgba(15,61,51,.6),transparent 50%,rgba(15,61,51,.6)),
+    linear-gradient(-45deg,rgba(15,61,51,.6),transparent 50%,rgba(15,61,51,.6));
+  clip-path:polygon(
+    50% 0%,
+    65% 20%,
+    100% 25%,
+    80% 50%,
+    100% 75%,
+    65% 80%,
+    50% 100%,
+    35% 80%,
+    0% 75%,
+    20% 50%,
+    0% 25%,
+    35% 20%
+  );
+  opacity:.9;
+}
+
+/* نقطة مضيئة في وسط الشعار */
+.brand-emblem::after{
+  content:"";
+  position:absolute;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#fefbef;
+  box-shadow:0 0 12px rgba(255,255,255,.9);
+}
+
+/* نص الشعار */
+.brand-name{
+  font-size:27px;
+  letter-spacing:1px;
+  margin-bottom:2px;
+}
+.brand-sub{
+  font-size:13px;
+  color:#4f6659;
+}
+
+/* زخرفة خط عربي حول العنوان */
+.decor-line{
+  position:relative;
+  margin:12px auto 10px;
+  width:220px;
+  height:1px;
+  background:linear-gradient(to right,transparent,#cda54a,transparent);
+}
+.decor-line::before,
+.decor-line::after{
+  content:"۞";
+  position:absolute;
+  top:-12px;
+  font-size:14px;
+  color:#c99c33;
+}
+.decor-line::before{left:0}
+.decor-line::after{right:0}
+
+/* التاريخ */
+.date{
+  font-size:12px;
+  color:#607468;
+}
+
+/* أقسام الإدخال */
+.section{
+  margin-top:20px;
+  margin-bottom:6px;
+}
+.section-title{
+  font-weight:bold;
+  color:#0f3d33;
+  font-size:15px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.section-icon{
+  width:22px;
+  height:22px;
+  border-radius:7px;
+  background:radial-gradient(circle at 30% 0,#ffffff,#d1c07f);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  color:#0f3d33;
+  box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+label{
+  display:block;
+  font-size:13px;
+  color:#5b6d61;
+  margin-bottom:4px;
+}
+input[type=number]{
+  width:100%;
+  padding:9px 12px;
+  border-radius:12px;
+  border:1px solid #d4ddd7;
+  font-size:14px;
+  background:#f9fbfa;
+  transition:border .2s, box-shadow .2s, background .2s;
+}
+input[type=number]:focus{
+  outline:none;
+  border-color:#1f7f4f;
+  box-shadow:0 0 0 2px rgba(31,127,79,.18);
+  background:#ffffff;
+}
+.grid-3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.grid-2{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+/* أزرار */
+.btn-row{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+.btn{
+  flex:1;
+  padding:11px 10px;
+  border:none;
+  border-radius:14px;
+  font-size:15px;
+  font-family:Tahoma;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:transform .1s, box-shadow .2s, background .2s;
+}
+.btn:active{transform:scale(.98)}
+.btn-primary{
+  background:linear-gradient(135deg,#1f7f4f,#2fa766);
+  color:#fff;
+  box-shadow:0 6px 14px rgba(0,0,0,.35);
+}
+.btn-primary:hover{
+  background:linear-gradient(135deg,#1a6a43,#279159);
+}
+.btn-secondary{
+  background:rgba(246,248,247,.95);
+  color:#2d3f35;
+  border:1px solid #d4ddd7;
+}
+.btn-secondary:hover{
+  background:#eef4f1;
+}
+
+/* بطاقات الإحصاء */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin:18px 0 14px;
+}
+.stat-card{
+  background:linear-gradient(135deg,rgba(247,250,248,.98),rgba(237,243,240,.9));
+  border-radius:14px;
+  padding:10px 8px;
+  text-align:center;
+  border:1px solid rgba(214,222,217,.9);
+}
+.stat-val{
+  font-size:19px;
+  font-weight:bold;
+  color:#1f7f4f;
+}
+.stat-label{
+  font-size:11px;
+  color:#6b7c71;
+}
+
+/* شريط تقدم على هيئة محراب */
+.progress-wrap{margin-bottom:14px;}
+.progress-label{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  color:#4c5d53;
+  margin-bottom:4px;
+}
+.mihrab{
+  position:relative;
+  width:100%;
+  height:18px;
+  border-radius:999px 999px 10px 10px;
+  background:linear-gradient(180deg,#d5dfda,#b8c7be);
+  overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.8);
+}
+.mihrab-fill{
+  position:absolute;
+  inset:2px;
+  width:0%;
+  border-radius:999px 999px 8px 8px;
+  background:linear-gradient(90deg,#1f7f4f,#3ba86b,#d1c07f);
+  box-shadow:0 0 8px rgba(31,127,79,.45);
+  transition:width .6s ease;
+}
+
+/* الخطة */
+.plan-wrap{margin-top:20px;position:relative;}
+.plan-wrap h3{
+  font-size:16px;
+  color:#0f3d33;
+  margin-bottom:8px;
+}
+.plan-meta{
+  font-size:12px;
+  color:#495c51;
+  margin-bottom:10px;
+  line-height:1.8;
+}
+
+/* زخرفة في زاوية الخطة */
+.plan-wrap::before{
+  content:"";
+  position:absolute;
+  top:-12px;
+  right:4px;
+  width:70px;
+  height:70px;
+  background:
+    radial-gradient(circle at 30% 0,#ffffff,#f5f0dc 50%,transparent 70%);
+  opacity:.5;
+  pointer-events:none;
+}
+
+.table-scroll{overflow-x:auto;margin-top:6px}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+th,td{
+  border:1px solid #dde5df;
+  padding:8px 6px;
+  text-align:center;
+}
+th{
+  background:linear-gradient(180deg,#f4f7f5,#e4ece7);
+  color:#2c3f34;
+  font-weight:bold;
+}
+tr:nth-child(even) td{background:#fafcfb}
+.night-special td{background:#fff7e3 !important}
+.night-special:nth-child(even) td{background:#fff3d1 !important}
+.badge{
+  display:inline-block;
+  border-radius:999px;
+  padding:1px 7px;
+  font-size:10px;
+  margin-right:3px;
+}
+.badge-odd{background:#b3362e;color:#fff}
+.badge-ten{background:#1f7f4f;color:#fff}
+.juz-cell{font-weight:bold;color:#1f7f4f;}
+tfoot td{
+  font-weight:bold;
+  background:#f2f5f3 !important;
+}
+
+/* رسائل الخطأ */
+.error-msg{
+  margin-top:12px;
+  font-size:13px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#fdecea;
+  color:#b3322a;
+  border:1px solid #f2c9c5;
+}
+
+/* طباعة الخطة فقط */
+@media print{
+  body{background:#fff;padding:0}
+  .container{box-shadow:none;border-radius:0}
+  .btn-row,.stats,.progress-wrap,.section,.brand-sub{display:none}
+  .inner::before,.inner::after{display:none}
+}
+
+/* استجابة */
+@media(max-width:600px){
+  .grid-3{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <div class="inner">
+    <div class="content">
+
+      <div class="header">
+        <div class="brand-emblem"></div>
+        <div class="brand-name">ختمتي</div>
+        <div class="brand-sub">حاسبة المحراب لخطة ختم القرآن</div>
+        <div class="decor-line"></div>
+        <div class="date" id="todayDate"></div>
+      </div>
+
+      <!-- الإحصاءات -->
+      <div class="stats" id="statsRow" style="display:none">
+        <div class="stat-card">
+          <div class="stat-val" id="statDone">-</div>
+          <div class="stat-label">صفحات مقروءة</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statLeft">-</div>
+          <div class="stat-label">صفحات متبقية</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statNights">-</div>
+          <div class="stat-label">ليالٍ متبقية</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statDaily">-</div>
+          <div class="stat-label">صفحات / ليلة</div>
+        </div>
+      </div>
+
+      <!-- شريط التقدم -->
+      <div class="progress-wrap" id="progressWrap" style="display:none">
+        <div class="progress-label">
+          <span>نسبة الإنجاز في الختمة</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="mihrab">
+          <div class="mihrab-fill" id="mihrabFill"></div>
+        </div>
+      </div>
+
+      <!-- الحالة الحالية -->
+      <div class="section">
+        <div class="section-title">
+          <div class="section-icon">﴿</div>
+          <span>الحالة الحالية</span>
+        </div>
+        <div class="grid-3">
+          <div>
+            <label>الصفحة الحالية</label>
+            <input id="currentPage" type="number" min="1" max="604" value="326">
+          </div>
+          <div>
+            <label>الليلة الحالية</label>
+            <input id="currentNight" type="number" min="1" max="30" value="24">
+          </div>
+          <div>
+            <label>ليلة الختم</label>
+            <input id="finishNight" type="number" min="1" max="30" value="29">
+          </div>
+        </div>
+      </div>
+
+      <!-- إعدادات الإمام -->
+      <div class="section">
+        <div class="section-title">
+          <div class="section-icon">🕋</div>
+          <span>إعدادات الإمام (الركعات)</span>
+        </div>
+        <div class="grid-3">
+          <div>
+            <label>الفجر</label>
+            <input id="fajrRakats" type="number" min="0" value="2">
+          </div>
+          <div>
+            <label>العشاء</label>
+            <input id="ishaRakats" type="number" min="0" value="2">
+          </div>
+          <div>
+            <label>التراويح</label>
+            <input id="tarawihRakats" type="number" min="0" value="10">
+          </div>
+          <div>
+            <label>القيام</label>
+            <input id="qiyamRakats" type="number" min="0" value="0">
+          </div>
+        </div>
+      </div>
+
+      <!-- الأزرار -->
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="calculate()">
+          <span>🗓️</span><span>احسب خطة ختمتي</span>
+        </button>
+        <button class="btn btn-secondary" onclick="window.print()">
+          <span>🖨️</span><span>طباعة الخطة</span>
+        </button>
+      </div>
+
+      <!-- مخرجات الخطة -->
+      <div id="planOutput"></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// التاريخ هجري + ميلادي
+function showDate(){
+  const now=new Date();
+  const g=now.toLocaleDateString('ar-SA');
+  const h=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',
+    {day:'numeric',month:'long',year:'numeric'}
+  ).format(now);
+  document.getElementById("todayDate").textContent =
+    "اليوم: " + g + " | " + h;
+}
+showDate();
+
+// كل 20 صفحة تقريباً جزء[web:12]
+function getJuz(page){
+  const juz=Math.ceil(page/20);
+  return Math.min(juz,30);
+}
+function val(id){return parseInt(document.getElementById(id).value)||0;}
+
+function validate(page,night,finish){
+  if(isNaN(page)||page<1||page>604) return "الصفحة الحالية يجب أن تكون بين 1 و604";
+  if(isNaN(night)||night<1||night>30) return "الليلة الحالية يجب أن تكون بين 1 و30";
+  if(isNaN(finish)||finish<night) return "ليلة الختم يجب أن تكون بعد الليلة الحالية أو مساوية لها";
+  if(finish>30) return "ليلة الختم لا تتجاوز 30";
+  return null;
+}
+
+const FIELDS=[
+  "currentPage","currentNight","finishNight",
+  "fajrRakats","ishaRakats","tarawihRakats","qiyamRakats"
+];
+
+function saveSettings(){
+  FIELDS.forEach(id=>{
+    localStorage.setItem("khatmati_"+id,document.getElementById(id).value);
+  });
+}
+function loadSettings(){
+  FIELDS.forEach(id=>{
+    const v=localStorage.getItem("khatmati_"+id);
+    if(v!==null) document.getElementById(id).value=v;
+  });
+}
+loadSettings();
+
+function calculate(){
+  const TOTAL=604;
+  const page  =val("currentPage");
+  const night =val("currentNight");
+  const finish=val("finishNight");
+  const fajr  =val("fajrRakats");
+  const isha  =val("ishaRakats");
+  const tarawih=val("tarawihRakats");
+  const qiyam =val("qiyamRakats");
+
+  const err=validate(page,night,finish);
+  if(err){
+    document.getElementById("planOutput").innerHTML =
+      `<div class="error-msg">⚠️ ${err}</div>`;
+    return;
+  }
+
+  const nightsLeft = finish-night+1;
+  const pagesLeft  = TOTAL-page+1;
+  const daily      = Math.ceil(pagesLeft/nightsLeft);
+  const totalRakats= fajr+isha+tarawih+qiyam;
+  const pagesPerRakat = totalRakats>0 ? (daily/totalRakats).toFixed(2) : "—";
+  const pct=Math.round(((page-1)/TOTAL)*100);
+
+  // الإحصاءات
+  document.getElementById("statsRow").style.display="grid";
+  document.getElementById("progressWrap").style.display="block";
+  document.getElementById("statDone").textContent  = page-1;
+  document.getElementById("statLeft").textContent  = pagesLeft;
+  document.getElementById("statNights").textContent= nightsLeft;
+  document.getElementById("statDaily").textContent = daily;
+  document.getElementById("progressPct").textContent = pct+"%";
+  setTimeout(()=>{
+    document.getElementById("mihrabFill").style.width=pct+"%";
+  },50);
+
+  // جدول الخطة
+  let rows="";
+  let start=page;
+  let totalInPlan=0;
+
+  for(let i=night;i<=finish;i++){
+    const isLast=(i===finish);
+    const tonight=isLast ? (TOTAL-start+1) : daily;
+    const end=Math.min(start+tonight-1,TOTAL);
+    const juzStart=getJuz(start);
+    const juzEnd=getJuz(end);
+    const juzText=juzStart===juzEnd ? `${juzStart}` : `${juzStart}–${juzEnd}`;
+    const isOdd=[21,23,25,27,29].includes(i);
+    const isSpecial=i>=21;
+    totalInPlan+=tonight;
+
+    const badges = isOdd
+      ? `<span class="badge badge-odd">وتر</span>`
+      : (isSpecial ? `<span class="badge badge-ten">العشر</span>` : "");
+
+    rows+=`
+      <tr class="${isSpecial?"night-special":""}">
+        <td>${i} ${badges}</td>
+        <td>${start}</td>
+        <td>${end}</td>
+        <td>${tonight}</td>
+        <td class="juz-cell">${juzText}</td>
+      </tr>`;
+    start=end+1;
+  }
+
+  document.getElementById("planOutput").innerHTML=`
+    <div class="plan-wrap">
+      <h3>خطة ختمتي التفصيلية</h3>
+      <div class="plan-meta">
+        📖 المعدل اليومي: <b>${daily}</b> صفحة &nbsp;|&nbsp;
+        🕌 إجمالي الركعات: <b>${totalRakats}</b> &nbsp;|&nbsp;
+        📄 صفحات لكل ركعة تقريبًا: <b>${pagesPerRakat}</b>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>الليلة</th>
+              <th>من صفحة</th>
+              <th>إلى صفحة</th>
+              <th>عدد الصفحات</th>
+              <th>الجزء</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">إجمالي الصفحات في الخطة</td>
+              <td>${totalInPlan}</td>
+              <td>—</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  `;
+
+  saveSettings();
+}
+</script>
+</body>
+</html>
